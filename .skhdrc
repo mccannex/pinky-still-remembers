@@ -1,0 +1,96 @@
+# skhd configuration
+# docs & key list: https://github.com/koekeishiya/skhd
+# key name reference: https://github.com/koekeishiya/skhd/issues/1
+
+# ── system ───────────────────────────────────────────────────────────────────
+
+# option+e opens Finder (Windows Explorer equivalent)
+lalt - e : open ~
+
+# fn+q mimics cmd+q (quit app)
+fn - q : skhd -k "cmd - q"
+
+# ── editing ──────────────────────────────────────────────────────────────────
+
+fn - a : skhd -k "cmd - a"
+fn - v : skhd -k "cmd - v"
+fn - x : skhd -k "cmd - x"
+fn - z : skhd -k "cmd - z"
+fn - y : skhd -k "cmd + shift - z"
+fn - s : skhd -k "cmd - s"
+fn - f : skhd -k "cmd - f"
+fn - w : skhd -k "cmd - w"
+
+# fn+c is cmd+c (copy) everywhere except shells, where it sends ctrl+c (SIGINT)
+# note: Warp's frontmost process name is "stable" (its release channel), not
+# "Warp" - matching "Warp" here silently never fired; both are matched below
+# in case this differs across Warp's release channels (stable/preview).
+fn - c [
+    "Terminal" : skhd -k "ctrl - c"
+    "Warp"     : skhd -k "ctrl - c"
+    "stable"   : skhd -k "ctrl - c"
+    *          : skhd -k "cmd - c"
+]
+
+# ── windows-style navigation ────────────────────────────────────────────────
+# comment this block out to restore native fn behavior (native meaning: delete=forward-delete)
+#
+# fn+left/right/up/down for word/line jump were removed: Apple hardware always
+# sets the "fn" flag on arrow/nav-cluster keys regardless of whether the
+# physical Fn key is actually held (a long-standing macOS quirk), so those
+# rules fired unconditionally on every plain arrow press instead of only with
+# Fn held. fn+delete is unaffected - it targets the plain Backspace key, which
+# doesn't have this quirk.
+
+fn - delete : skhd -k "alt - backspace"   # delete word backward
+
+# ── browser (chrome / brave) ──────────────────────────────────────────────────
+
+fn - tab [
+    "Google Chrome" : skhd -k "ctrl - tab"
+    "Brave Browser" : skhd -k "ctrl - tab"
+    *               ~
+]
+fn + shift - tab [
+    "Google Chrome" : skhd -k "ctrl + shift - tab"
+    "Brave Browser" : skhd -k "ctrl + shift - tab"
+    *               ~
+]
+fn - t [
+    "Google Chrome" : skhd -k "cmd - t"
+    "Brave Browser" : skhd -k "cmd - t"
+    *               ~
+]
+fn - r [
+    "Google Chrome" : skhd -k "cmd - r"
+    "Brave Browser" : skhd -k "cmd - r"
+    *               ~
+]
+fn + shift - t [
+    "Google Chrome" : skhd -k "cmd + shift - t"
+    "Brave Browser" : skhd -k "cmd + shift - t"
+    *               ~
+]
+
+# cmd+d focuses address bar instead of bookmarking
+cmd - d [
+    "Google Chrome" : skhd -k "cmd - l"
+    "Brave Browser" : skhd -k "cmd - l"
+]
+
+# ── shell-gpt ────────────────────────────────────────────────────────────────
+
+# fn+l mimics ctrl+l (shell-gpt inline command suggestion, Windows muscle memory).
+# Warp intercepts every custom key binding at its prompt before zsh ever sees it
+# (confirmed across ctrl+l, ctrl+g, ctrl+o, and a raw F13 escape sequence - see
+# warpdotdev/Warp#3705, closed "not planned"), so shell-gpt's normal zle widget
+# (bound to ctrl+l, see ~/.zshrc) can't be triggered there at all. Instead this
+# runs a script that selects/copies/retypes the line through skhd, which Warp
+# does forward correctly. Warp's frontmost process name is "stable" (its release
+# channel), not "Warp" - both are matched below.
+fn - l [
+    "Warp"   : ~/Code/skdh/bin/sgpt-warp-hotkey.sh
+    "stable" : ~/Code/skdh/bin/sgpt-warp-hotkey.sh
+    *        ~
+]
+
