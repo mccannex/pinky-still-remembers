@@ -4,8 +4,8 @@
 
 # ── system ───────────────────────────────────────────────────────────────────
 
-# option+e opens Finder (Windows Explorer equivalent)
-lalt - e : open ~
+# option+e opens Folders at home (Windows Explorer equivalent)
+lalt - e : open -a "Folders" ~
 
 # fn+q mimics cmd+q (quit app)
 fn - q : skhd -k "cmd - q"
