@@ -1,18 +1,16 @@
 # pinky-still-remembers
 
-Fifteen years of Ctrl+C, Ctrl+V, Alt+Tab don't disappear because the OS
-changed. This repo makes macOS honor that memory instead of fighting it.
+Fifteen years of Ctrl+C, Ctrl+V, Alt+Tab live in muscle memory. macOS
+remaps all of them. This repo remaps them back.
 
 ## Why
 
-Consistent, predictable behavior is what lets you stop thinking about the
-tool and focus on the work. Linux gets this right almost by default, most
-window managers and shells map cleanly onto Windows habits with barely any
-setup. macOS actively resists it: different modifier keys, different
-behaviors, apps that quietly reinterpret your keystrokes. This repo is the
-fix, built around [skhd](https://github.com/koekeishiya/skhd). `fn` becomes
-`Ctrl` almost everywhere it matters, and every exception is documented
-below.
+Muscle memory only pays off when the keys stay put. macOS moves them: Cmd
+where Windows uses Ctrl, different nav-key behavior, apps that reinterpret
+keystrokes mid-edit. Every mismatch is a small tax on a keystroke you'll
+make thousands of times. This config, built on
+[skhd](https://github.com/koekeishiya/skhd), maps `fn` to `Ctrl` across the
+shortcuts that matter, with every exception documented below.
 
 ## Layout
 
@@ -22,15 +20,17 @@ below.
 
 ## What's in `.skhdrc`
 
-- **system**: `fn+q` quits the app, `Option+E` opens Finder at home.
+- **system**: `fn+q` quits the app, `Option+E` opens Folders at home.
 - **editing**: `fn+a/v/x/z/y/s/f/w` for `Ctrl+A/V/X/Z/Y/S/F/W`. `fn+c` is
   app aware: real `Ctrl+C` (SIGINT) in shells, `Cmd+C` (copy) everywhere
   else.
 - **windows-style navigation**: `fn+delete` for word-backward-delete.
   Arrow keys are deliberately excluded, see below.
-- **browser tab/navigation** (Chrome/Brave): `fn+tab`, `fn+shift+tab`,
-  `fn+t`, `fn+r`, `fn+shift+t` mimicking Windows browser shortcuts.
-  `Cmd+D` focuses the address bar instead of bookmarking.
+- **tab cycling**: `fn+tab` / `fn+shift+tab` cycle tabs forward/back in
+  Chrome, Brave, and Warp.
+- **browser** (Chrome/Brave): `fn+t` new tab, `fn+r` reload, `fn+shift+t`
+  reopen closed tab. `Cmd+D` focuses the address bar instead of
+  bookmarking.
 - **shell-gpt**: `fn+l` triggers an AI command suggestion hotkey. Warp
   needs a workaround, see `bin/README.md`.
 

@@ -49,11 +49,15 @@ fn - delete : skhd -k "alt - backspace"   # delete word backward
 fn - tab [
     "Google Chrome" : skhd -k "ctrl - tab"
     "Brave Browser" : skhd -k "ctrl - tab"
+    "Warp"          : skhd -k "ctrl - tab"
+    "stable"        : skhd -k "ctrl - tab"
     *               ~
 ]
 fn + shift - tab [
     "Google Chrome" : skhd -k "ctrl + shift - tab"
     "Brave Browser" : skhd -k "ctrl + shift - tab"
+    "Warp"          : skhd -k "ctrl + shift - tab"
+    "stable"        : skhd -k "ctrl + shift - tab"
     *               ~
 ]
 fn - t [
@@ -89,8 +93,8 @@ cmd - d [
 # does forward correctly. Warp's frontmost process name is "stable" (its release
 # channel), not "Warp" - both are matched below.
 fn - l [
-    "Warp"   : ~/Code/skdh/bin/sgpt-warp-hotkey.sh
-    "stable" : ~/Code/skdh/bin/sgpt-warp-hotkey.sh
+    "Warp"   : ~/Code/standalone/skdh/bin/sgpt-warp-hotkey.sh
+    "stable" : ~/Code/standalone/skdh/bin/sgpt-warp-hotkey.sh
     *        ~
 ]
 
