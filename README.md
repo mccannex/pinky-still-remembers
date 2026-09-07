@@ -9,56 +9,84 @@ Muscle memory only pays off when the keys stay put. macOS moves them: Cmd
 where Windows uses Ctrl, different nav-key behavior, apps that reinterpret
 keystrokes mid-edit. Every mismatch is a small tax on a keystroke you'll
 make thousands of times. This config, built on
-[skhd](https://github.com/koekeishiya/skhd), maps `fn` to `Ctrl` across the
-shortcuts that matter, with every exception documented below.
+[Karabiner-Elements](https://karabiner-elements.pqrs.org/), uses the
+otherwise-idle `fn` key as the Windows `Ctrl` stand-in, leaving `Cmd` where
+macOS put it.
+
+That approach is deliberate and uncommon. Most "PC style" configs swap
+`Ctrl` and `Cmd` wholesale, which breaks `Ctrl+C` as SIGINT in a shell.
+Mapping `fn` instead leaves every native macOS shortcut intact.
 
 ## Layout
 
-- `.skhdrc` - the skhd config, symlinked to `~/.skhdrc`.
-- `bin/` - scripts invoked from `.skhdrc` for anything too complex for a
+- `karabiner/fn-windows-keys.json` - the rule file, symlinked to
+  `~/.config/karabiner/assets/complex_modifications/`.
+- `bin/` - scripts invoked from a rule for anything too complex for a
   single keystroke (see `bin/README.md`).
 
-## What's in `.skhdrc`
+## Install
 
-- **system**: `fn+q` quits the app, `Option+E` opens Folders at home.
-- **editing**: `fn+a/v/x/z/y/s/f/w` for `Ctrl+A/V/X/Z/Y/S/F/W`. `fn+c` is
-  app aware: real `Ctrl+C` (SIGINT) in shells, `Cmd+C` (copy) everywhere
-  else.
-- **windows-style navigation**: `fn+delete` for word-backward-delete.
-  Arrow keys are deliberately excluded, see below.
-- **tab cycling**: `fn+tab` / `fn+shift+tab` cycle tabs forward/back in
-  Chrome, Brave, and Warp.
-- **browser** (Chrome/Brave): `fn+t` new tab, `fn+r` reload, `fn+shift+t`
-  reopen closed tab. `Cmd+D` focuses the address bar instead of
-  bookmarking.
-- **shell-gpt**: `fn+l` triggers an AI command suggestion hotkey. Warp
-  needs a workaround, see `bin/README.md`.
+```bash
+brew install --cask karabiner-elements
+ln -sfn "$PWD/karabiner/fn-windows-keys.json" \
+        ~/.config/karabiner/assets/complex_modifications/fn-windows-keys.json
+ln -sfn "$PWD/bin/sgpt-warp-hotkey.sh" ~/bin/sgpt-warp-hotkey
+```
+
+Then open Karabiner-Elements, go to Complex Modifications, click Add rule,
+and enable each rule. Approve the driver extension and grant Input
+Monitoring when macOS prompts.
+
+## Rules
+
+- **Editing**: `fn+a/v/x/z/y` for select all, paste, cut, undo, redo.
+- **File and window**: `fn+s/f/w/q` for save, find, close, quit.
+- **Delete**: `fn+delete` deletes the previous word.
+- **Navigation**: `fn+left/right` jump by word. Shift passes through, so
+  `fn+shift+left` selects by word.
+- **Copy / interrupt**: `fn+c` is app aware. Real `Ctrl+C` (SIGINT) in
+  Terminal and Warp, `Cmd+C` (copy) everywhere else.
+- **Browser**: `fn+tab` and `fn+shift+tab` cycle tabs in Brave and Warp.
+  `fn+t`, `fn+r`, `fn+shift+t` are new tab, reload, and reopen closed tab
+  in Brave. `Cmd+D` focuses the address bar, replacing add-bookmark.
+- **shell-gpt**: `fn+l` requests a command suggestion. Terminal gets a
+  plain remap to `Ctrl+L`; Warp needs a script (see `bin/README.md`).
+- **System**: `Option+E` opens Folders at home, mirroring Windows `Win+E`.
 
 ## Known limitations
 
-**skhd matches process names, not display names.** Warp's frontmost
-process name is `"stable"`, its release channel, not `"Warp"`. Rules
-meant for Warp need to match both or they silently never fire.
+**Editing a rule file does not change what is running.** Karabiner copies a
+rule into `~/.config/karabiner/karabiner.json` when you click Add rule. The
+file in this repo is a template. After changing a rule, remove it and re-add
+it in the UI, or the old copy keeps running.
+
+**Option+E is the acute accent dead key.** Binding it to Folders means
+`Option+E, e` no longer types é.
+
+**fn+delete replaces Forward Delete.** Nothing else on the keyboard
+produces it afterward.
 
 **Warp doesn't forward custom key bindings to the shell.** It intercepts
 almost any non-default key combination while the prompt is being edited,
 before the keystroke reaches zsh. Confirmed on Ctrl+L, Ctrl+G, Ctrl+O, and
-a raw F13 escape sequence, all swallowed. This is a known, unfixed Warp
-issue ([warpdotdev/Warp#3705](https://github.com/warpdotdev/Warp/issues/3705),
-closed "not planned"). `bin/sgpt-warp-hotkey.sh` works around it with
-select, copy, type in place of a forwarded keypress.
+a raw F13 escape sequence, all swallowed, and re-confirmed on Ctrl+L in
+September 2026. This is a known, unfixed Warp issue
+([warpdotdev/Warp#3705](https://github.com/warpdotdev/Warp/issues/3705),
+closed "not planned"). `bin/sgpt-warp-hotkey.sh` works around it.
 
-**Arrow and nav-cluster keys always report the Fn flag.** Apple hardware
-sets the Fn bit on arrow keys, Home/End, Forward-Delete, and the F-row
-unconditionally, whether or not the physical Fn key is held. skhd can't
-tell "arrow key alone" from "Fn+arrow key" for this set of keys.
-`fn+left/right/up/down` bindings were removed for this reason. `fn+delete`
-is unaffected since plain Backspace isn't part of that key class.
+## History
 
-## Reloading after edits
+This started on [skhd](https://github.com/koekeishiya/skhd) and moved to
+Karabiner-Elements. skhd reads keys through a CGEvent tap, which sees the
+Fn flag that Apple hardware sets unconditionally on arrow keys, Home/End,
+Forward-Delete, and the F-row. It can't tell a plain arrow press from
+`fn+arrow`, so word-jump bindings on the arrow keys fired on every arrow
+press and had to be abandoned. Karabiner reads the device below that layer
+and distinguishes the two, which is the reason for the move.
 
-```bash
-launchctl kickstart -k gui/$(id -u)/com.koekeishiya.skhd
-```
+Karabiner also matches applications by bundle identifier rather than
+process name. Under skhd, rules meant for Warp had to match `"stable"`, its
+release channel, because that is the process name; `"Warp"` silently never
+fired. `dev.warp.Warp-Stable` removes the guesswork.
 
-`skhd -r` works too if the daemon is already healthy.
+The skhd config is preserved in git history if it is ever needed.

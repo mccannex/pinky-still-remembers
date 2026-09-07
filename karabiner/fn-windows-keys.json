@@ -1,0 +1,282 @@
+{
+  "title": "Windows muscle memory (fn as Ctrl)",
+  "rules": [
+    {
+      "description": "Editing: fn+a/v/x/z/y - selection, clipboard, undo",
+      "manipulators": [
+        {
+          "description": "fn+a = Select All (Cmd+A)",
+          "type": "basic",
+          "from": { "key_code": "a", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "a", "modifiers": ["left_command"] }]
+        },
+        {
+          "description": "fn+v = Paste (Cmd+V)",
+          "type": "basic",
+          "from": { "key_code": "v", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "v", "modifiers": ["left_command"] }]
+        },
+        {
+          "description": "fn+x = Cut (Cmd+X)",
+          "type": "basic",
+          "from": { "key_code": "x", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "x", "modifiers": ["left_command"] }]
+        },
+        {
+          "description": "fn+z = Undo (Cmd+Z)",
+          "type": "basic",
+          "from": { "key_code": "z", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "z", "modifiers": ["left_command"] }]
+        },
+        {
+          "description": "fn+y = Redo (Cmd+Shift+Z)",
+          "type": "basic",
+          "from": { "key_code": "y", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "z", "modifiers": ["left_command", "left_shift"] }]
+        }
+      ]
+    },
+    {
+      "description": "File and window: fn+s/f/w/q",
+      "manipulators": [
+        {
+          "description": "fn+s = Save (Cmd+S)",
+          "type": "basic",
+          "from": { "key_code": "s", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "s", "modifiers": ["left_command"] }]
+        },
+        {
+          "description": "fn+f = Find (Cmd+F)",
+          "type": "basic",
+          "from": { "key_code": "f", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "f", "modifiers": ["left_command"] }]
+        },
+        {
+          "description": "fn+w = Close window/tab (Cmd+W)",
+          "type": "basic",
+          "from": { "key_code": "w", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "w", "modifiers": ["left_command"] }]
+        },
+        {
+          "description": "fn+q = Quit app (Cmd+Q)",
+          "type": "basic",
+          "from": { "key_code": "q", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "q", "modifiers": ["left_command"] }]
+        }
+      ]
+    },
+    {
+      "description": "Delete: fn+delete - word backward (overrides forward delete)",
+      "manipulators": [
+        {
+          "description": "fn+delete = delete word backward (Option+Delete)",
+          "type": "basic",
+          "from": {
+            "key_code": "delete_or_backspace",
+            "modifiers": { "mandatory": ["fn"] }
+          },
+          "to": [
+            { "key_code": "delete_or_backspace", "modifiers": ["left_option"] }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Navigation: fn+left/right - word jump",
+      "manipulators": [
+        {
+          "description": "fn+left = word left (Ctrl+Left)",
+          "type": "basic",
+          "from": {
+            "key_code": "left_arrow",
+            "modifiers": { "mandatory": ["fn"], "optional": ["any"] }
+          },
+          "to": [{ "key_code": "left_arrow", "modifiers": ["left_option"] }]
+        },
+        {
+          "description": "fn+right = word right (Ctrl+Right)",
+          "type": "basic",
+          "from": {
+            "key_code": "right_arrow",
+            "modifiers": { "mandatory": ["fn"], "optional": ["any"] }
+          },
+          "to": [{ "key_code": "right_arrow", "modifiers": ["left_option"] }]
+        }
+      ]
+    },
+    {
+      "description": "Copy / interrupt: fn+c - Ctrl+C in shells, Cmd+C elsewhere",
+      "manipulators": [
+        {
+          "description": "fn+c in Terminal/Warp = Ctrl+C (SIGINT)",
+          "type": "basic",
+          "from": { "key_code": "c", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "c", "modifiers": ["left_control"] }],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [
+                "^com\\.apple\\.Terminal$",
+                "^dev\\.warp\\.Warp-Stable$"
+              ]
+            }
+          ]
+        },
+        {
+          "description": "fn+c everywhere else = Copy (Cmd+C)",
+          "type": "basic",
+          "from": { "key_code": "c", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "c", "modifiers": ["left_command"] }]
+        }
+      ]
+    },
+    {
+      "description": "Browser: fn+tab/t/r - tab control in Brave and Warp",
+      "manipulators": [
+        {
+          "description": "fn+shift+tab = previous tab (Brave, Warp)",
+          "type": "basic",
+          "from": {
+            "key_code": "tab",
+            "modifiers": { "mandatory": ["fn", "shift"] }
+          },
+          "to": [
+            { "key_code": "tab", "modifiers": ["left_control", "left_shift"] }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [
+                "^com\\.brave\\.Browser$",
+                "^dev\\.warp\\.Warp-Stable$"
+              ]
+            }
+          ]
+        },
+        {
+          "description": "fn+tab = next tab (Brave, Warp)",
+          "type": "basic",
+          "from": { "key_code": "tab", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "tab", "modifiers": ["left_control"] }],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [
+                "^com\\.brave\\.Browser$",
+                "^dev\\.warp\\.Warp-Stable$"
+              ]
+            }
+          ]
+        },
+        {
+          "description": "fn+shift+t = reopen closed tab (Brave)",
+          "type": "basic",
+          "from": {
+            "key_code": "t",
+            "modifiers": { "mandatory": ["fn", "shift"] }
+          },
+          "to": [
+            { "key_code": "t", "modifiers": ["left_command", "left_shift"] }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.brave\\.Browser$"]
+            }
+          ]
+        },
+        {
+          "description": "fn+t = new tab (Brave)",
+          "type": "basic",
+          "from": { "key_code": "t", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "t", "modifiers": ["left_command"] }],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.brave\\.Browser$"]
+            }
+          ]
+        },
+        {
+          "description": "fn+r = reload (Brave)",
+          "type": "basic",
+          "from": { "key_code": "r", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "r", "modifiers": ["left_command"] }],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.brave\\.Browser$"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Browser: cmd+d focuses address bar in Brave (replaces bookmark)",
+      "manipulators": [
+        {
+          "description": "cmd+d = focus address bar (Cmd+L), Brave only",
+          "type": "basic",
+          "from": {
+            "key_code": "d",
+            "modifiers": { "mandatory": ["command"] }
+          },
+          "to": [{ "key_code": "l", "modifiers": ["left_command"] }],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.brave\\.Browser$"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "shell-gpt: fn+L - zle widget in Terminal, script in Warp",
+      "manipulators": [
+        {
+          "description": "fn+L in Terminal = Ctrl+L (fires the _sgpt_zsh widget)",
+          "type": "basic",
+          "from": { "key_code": "l", "modifiers": { "mandatory": ["fn"] } },
+          "to": [{ "key_code": "l", "modifiers": ["left_control"] }],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.apple\\.Terminal$"]
+            }
+          ]
+        },
+        {
+          "description": "fn+L in Warp = select/copy/sgpt/type workaround script",
+          "type": "basic",
+          "from": { "key_code": "l", "modifiers": { "mandatory": ["fn"] } },
+          "to": [
+            {
+              "shell_command": "$HOME/bin/sgpt-warp-hotkey"
+            }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^dev\\.warp\\.Warp-Stable$"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "System: Option+E opens Folders at home",
+      "manipulators": [
+        {
+          "description": "Option+E = open Folders at ~ (Windows Win+E)",
+          "type": "basic",
+          "from": {
+            "key_code": "e",
+            "modifiers": { "mandatory": ["left_option"] }
+          },
+          "to": [{ "shell_command": "open -a Folders ~" }]
+        }
+      ]
+    }
+  ]
+}
