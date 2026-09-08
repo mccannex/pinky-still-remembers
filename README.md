@@ -51,6 +51,10 @@ Monitoring when macOS prompts.
   in Brave. `Cmd+D` focuses the address bar, replacing add-bookmark.
 - **shell-gpt**: `fn+l` requests a command suggestion. Terminal gets a
   plain remap to `Ctrl+L`; Warp needs a script (see `bin/README.md`).
+- **Folders**: `Cmd+Left` and `Cmd+Right` go back and forward in history,
+  mirroring Windows `Alt+Left` / `Alt+Right`. Cmd rather than Option,
+  because Option+arrow is what the Navigation rule already emits and
+  Karabiner doesn't re-process its own output.
 - **System**: `Option+E` opens Folders at home, mirroring Windows `Win+E`.
 
 ## Known limitations
@@ -65,6 +69,12 @@ it in the UI, or the old copy keeps running.
 
 **fn+delete replaces Forward Delete.** Nothing else on the keyboard
 produces it afterward.
+
+**Cmd+Left is no longer line-start inside Folders.** Option+Left still
+does word-left there, which is the more useful of the two in a filename.
+Delete was considered for back instead and rejected: Karabiner matches on
+the frontmost application and has no condition for whether a text field has
+focus, so a bare Delete remap would fire while renaming a file.
 
 **Warp doesn't forward custom key bindings to the shell.** It intercepts
 almost any non-default key combination while the prompt is being edited,
