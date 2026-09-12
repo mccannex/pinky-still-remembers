@@ -302,6 +302,20 @@
       ]
     },
     {
+      "description": "System: Option+D shows the desktop",
+      "manipulators": [
+        {
+          "description": "Option+D = Show Desktop (Windows Win+D). Sends fn+F11, not bare F11: this Mac keeps media keys primary, so macOS turns a bare F11 into volume-down. Sending expose_desktop was tried first and macOS 26 ignored it",
+          "type": "basic",
+          "from": {
+            "key_code": "d",
+            "modifiers": { "mandatory": ["left_option"] }
+          },
+          "to": [{ "key_code": "f11", "modifiers": ["fn"] }]
+        }
+      ]
+    },
+    {
       "description": "System: Option+E opens Folders at home",
       "manipulators": [
         {

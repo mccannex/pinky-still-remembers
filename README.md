@@ -56,6 +56,7 @@ Monitoring when macOS prompts.
   because Option+arrow is what the Navigation rule already emits and
   Karabiner doesn't re-process its own output.
 - **System**: `Option+E` opens Folders at home, mirroring Windows `Win+E`.
+  `Option+D` shows and hides the desktop, mirroring Windows `Win+D`.
 
 ## Known limitations
 
@@ -65,7 +66,13 @@ file in this repo is a template. After changing a rule, remove it and re-add
 it in the UI, or the old copy keeps running.
 
 **Option+E is the acute accent dead key.** Binding it to Folders means
-`Option+E, e` no longer types é.
+`Option+E, e` no longer types é. `Option+D` costs the ∂ character the same
+way.
+
+**Show Desktop needs fn+F11, not F11.** This Mac keeps media keys primary,
+so macOS turns a bare F11 into volume-down. The `Option+D` rule sends
+`fn+F11` for that reason. Karabiner's `expose_desktop` key code was tried
+first and macOS 26 ignored it.
 
 **fn+delete replaces Forward Delete.** Nothing else on the keyboard
 produces it afterward.
