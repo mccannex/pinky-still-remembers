@@ -1,21 +1,13 @@
 # pinky-still-remembers
 
-Fifteen years of Ctrl+C, Ctrl+V, Alt+Tab live in muscle memory. macOS
-remaps all of them. This repo remaps them back.
+Decades of Windows muscle memory don't switch off at a Mac keyboard. I
+regularly move between Windows, macOS, and Linux, and the same keys should
+do the same thing on all three.
 
-## Why
-
-Muscle memory only pays off when the keys stay put. macOS moves them: Cmd
-where Windows uses Ctrl, different nav-key behavior, apps that reinterpret
-keystrokes mid-edit. Every mismatch is a small tax on a keystroke you'll
-make thousands of times. This config, built on
-[Karabiner-Elements](https://karabiner-elements.pqrs.org/), uses the
-otherwise-idle `fn` key as the Windows `Ctrl` stand-in, leaving `Cmd` where
-macOS put it.
-
-That approach is deliberate and uncommon. Most "PC style" configs swap
-`Ctrl` and `Cmd` wholesale, which breaks `Ctrl+C` as SIGINT in a shell.
-Mapping `fn` instead leaves every native macOS shortcut intact.
+This is a [Karabiner-Elements](https://karabiner-elements.pqrs.org/) config
+that makes macOS follow Windows shortcuts. It uses `fn` as the Windows
+`Ctrl` key and leaves `Cmd` alone, so every native macOS shortcut keeps
+working.
 
 ## Layout
 
@@ -27,15 +19,41 @@ Mapping `fn` instead leaves every native macOS shortcut intact.
 ## Install
 
 ```bash
+git clone git@github.com:mccannex/pinky-still-remembers.git
+cd pinky-still-remembers
 brew install --cask karabiner-elements
+mkdir -p ~/bin ~/.config/karabiner/assets/complex_modifications
 ln -sfn "$PWD/karabiner/fn-windows-keys.json" \
         ~/.config/karabiner/assets/complex_modifications/fn-windows-keys.json
 ln -sfn "$PWD/bin/sgpt-warp-hotkey.sh" ~/bin/sgpt-warp-hotkey
 ```
 
-Then open Karabiner-Elements, go to Complex Modifications, click Add rule,
-and enable each rule. Approve the driver extension and grant Input
-Monitoring when macOS prompts.
+Then open Karabiner-Elements. Approve the driver extension and grant Input
+Monitoring when macOS prompts. Go to Complex Modifications, click Add rule,
+and enable each rule.
+
+The `fn+l` rule needs shell-gpt as well. Skip this if you don't use it.
+
+1. Install it with `pipx install shell-gpt`, then run `sgpt` once to set
+   the API key.
+2. Run `sgpt --install-integration`. This adds the `_sgpt_zsh` widget to
+   `~/.zshrc` and binds it to `Ctrl+L`. Terminal needs it, and it lives
+   outside this repo.
+3. Grant Accessibility to `karabiner_console_user_server` in System
+   Settings. The Warp script needs it to send keystrokes.
+
+## Changing a rule
+
+1. Edit `karabiner/fn-windows-keys.json`.
+2. Validate it with `jq . karabiner/fn-windows-keys.json`. A malformed file
+   makes its rules vanish from Add rule with no error.
+3. In Complex Modifications, remove the old copy of the rule.
+4. Click Add rule and enable the new copy.
+
+Karabiner copies each rule into `~/.config/karabiner/karabiner.json` when
+you add it. The file in this repo is a template, so editing it alone
+changes nothing that is running. Scripts in `bin/` don't need these steps,
+because the rules point at their paths.
 
 ## Rules
 
@@ -51,37 +69,36 @@ Monitoring when macOS prompts.
   in Brave. `Cmd+D` focuses the address bar, replacing add-bookmark.
 - **shell-gpt**: `fn+l` requests a command suggestion. Terminal gets a
   plain remap to `Ctrl+L`; Warp needs a script (see `bin/README.md`).
-- **Folders**: `Cmd+Left` and `Cmd+Right` go back and forward in history,
-  mirroring Windows `Alt+Left` / `Alt+Right`. Cmd rather than Option,
-  because Option+arrow is what the Navigation rule already emits and
-  Karabiner doesn't re-process its own output.
-- **System**: `Option+E` opens Folders at home, mirroring Windows `Win+E`.
-  `Option+D` shows and hides the desktop, mirroring Windows `Win+D`.
+- **Finder**: `Cmd+Left` and `Cmd+Right` go back and forward in history,
+  mirroring Windows `Alt+Left` / `Alt+Right`.
+- **System**: `Option+E` opens Finder at the Desktop, mirroring Windows
+  `Win+E`. `Option+D` shows and hides the desktop, mirroring Windows
+  `Win+D`.
 
 ## Known limitations
 
-**Editing a rule file does not change what is running.** Karabiner copies a
-rule into `~/.config/karabiner/karabiner.json` when you click Add rule. The
-file in this repo is a template. After changing a rule, remove it and re-add
-it in the UI, or the old copy keeps running.
+**Left Option+E and Left Option+D lose their characters.** Left Option+E
+no longer starts an é, and Left Option+D no longer types ∂. Both rules bind
+Left Option only, so Right Option+E and Right Option+D still type them.
 
-**Option+E is the acute accent dead key.** Binding it to Folders means
-`Option+E, e` no longer types é. `Option+D` costs the ∂ character the same
-way.
-
-**Show Desktop needs fn+F11, not F11.** This Mac keeps media keys primary,
-so macOS turns a bare F11 into volume-down. The `Option+D` rule sends
-`fn+F11` for that reason. Karabiner's `expose_desktop` key code was tried
-first and macOS 26 ignored it.
+**Option+D depends on the function-key setting.** It sends `fn+F11`,
+because this Mac keeps media keys primary and macOS turns a bare F11 into
+volume-down. If "Use F1, F2, etc. keys as standard function keys" is turned
+on, the roles flip: `fn+F11` becomes volume-down and the rule breaks. In
+that case, change the rule to send a bare `f11`. Karabiner's
+`expose_desktop` key code was tried first and macOS 26 ignored it.
 
 **fn+delete replaces Forward Delete.** Nothing else on the keyboard
 produces it afterward.
 
-**Cmd+Left is no longer line-start inside Folders.** Option+Left still
-does word-left there, which is the more useful of the two in a filename.
-Delete was considered for back instead and rejected: Karabiner matches on
-the frontmost application and has no condition for whether a text field has
-focus, so a bare Delete remap would fire while renaming a file.
+**Finder back and forward cost Cmd+Left as line-start.** Inside Finder,
+for example while renaming a file, Cmd+Left no longer jumps to line-start.
+Option+Left still jumps a word there. Option+arrow would match Windows
+Alt+arrow more closely, but the Navigation rule already emits Option+arrow,
+and Karabiner doesn't re-process its own output. Delete was considered for
+back and rejected. Karabiner matches on the frontmost app, with no
+condition for text-field focus, so a bare Delete remap would also fire
+while renaming a file.
 
 **Warp doesn't forward custom key bindings to the shell.** It intercepts
 almost any non-default key combination while the prompt is being edited,
@@ -90,20 +107,3 @@ a raw F13 escape sequence, all swallowed, and re-confirmed on Ctrl+L in
 September 2026. This is a known, unfixed Warp issue
 ([warpdotdev/Warp#3705](https://github.com/warpdotdev/Warp/issues/3705),
 closed "not planned"). `bin/sgpt-warp-hotkey.sh` works around it.
-
-## History
-
-This started on [skhd](https://github.com/koekeishiya/skhd) and moved to
-Karabiner-Elements. skhd reads keys through a CGEvent tap, which sees the
-Fn flag that Apple hardware sets unconditionally on arrow keys, Home/End,
-Forward-Delete, and the F-row. It can't tell a plain arrow press from
-`fn+arrow`, so word-jump bindings on the arrow keys fired on every arrow
-press and had to be abandoned. Karabiner reads the device below that layer
-and distinguishes the two, which is the reason for the move.
-
-Karabiner also matches applications by bundle identifier rather than
-process name. Under skhd, rules meant for Warp had to match `"stable"`, its
-release channel, because that is the process name; `"Warp"` silently never
-fired. `dev.warp.Warp-Stable` removes the guesswork.
-
-The skhd config is preserved in git history if it is ever needed.

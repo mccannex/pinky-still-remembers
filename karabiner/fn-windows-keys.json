@@ -265,7 +265,7 @@
       ]
     },
     {
-      "description": "Folders: cmd+left/right - back and forward history",
+      "description": "Finder: cmd+left/right - back and forward history",
       "manipulators": [
         {
           "description": "cmd+left = back (Cmd+[), mimics Windows Alt+Left",
@@ -278,7 +278,7 @@
           "conditions": [
             {
               "type": "frontmost_application_if",
-              "bundle_identifiers": ["^com\\.minttype\\.folders$"]
+              "bundle_identifiers": ["^com\\.apple\\.finder$"]
             }
           ]
         },
@@ -295,7 +295,7 @@
           "conditions": [
             {
               "type": "frontmost_application_if",
-              "bundle_identifiers": ["^com\\.minttype\\.folders$"]
+              "bundle_identifiers": ["^com\\.apple\\.finder$"]
             }
           ]
         }
@@ -316,16 +316,16 @@
       ]
     },
     {
-      "description": "System: Option+E opens Folders at home",
+      "description": "System: Option+E opens Finder at the Desktop",
       "manipulators": [
         {
-          "description": "Option+E = open Folders at ~ (Windows Win+E)",
+          "description": "Option+E = open Finder at ~/Desktop (Windows Win+E)",
           "type": "basic",
           "from": {
             "key_code": "e",
             "modifiers": { "mandatory": ["left_option"] }
           },
-          "to": [{ "shell_command": "open -a Folders ~" }]
+          "to": [{ "shell_command": "open -a Finder ~/Desktop" }]
         }
       ]
     }
